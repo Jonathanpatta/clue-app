@@ -1,0 +1,502 @@
+:root {
+  --ink: #2b2118;
+  --paper: #f4e4c1;
+  --bark: #6f4518;
+  --gold: #ffd166;
+  --leaf: #2d6a4f;
+  font-family: Nunito, system-ui, sans-serif;
+  color: var(--ink);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #1b4332;
+}
+
+a {
+  color: inherit;
+}
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 80px;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.scene-art {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.fireflies {
+  position: absolute;
+  inset: 0;
+}
+
+.firefly {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  animation: blink 3s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sun-spin {
+  animation: spin 40s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sway,
+.sway-slow {
+  animation: sway 4s ease-in-out infinite;
+  transform-box: fill-box;
+}
+
+.sway-slow {
+  animation-duration: 6s;
+}
+
+@keyframes sway {
+  50% {
+    transform: rotate(3deg) translateX(6px);
+  }
+}
+
+.drift {
+  animation: drift 18s ease-in-out infinite;
+}
+
+@keyframes drift {
+  50% {
+    transform: translateX(40px);
+  }
+}
+
+.wind-ribbon {
+  stroke-dashoffset: 0;
+  animation: dash 8s linear infinite;
+}
+
+.wind-ribbon.delay {
+  animation-duration: 11s;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+
+.soar {
+  animation: soar 6s ease-in-out infinite;
+}
+
+@keyframes soar {
+  50% {
+    transform: translate(30px, -24px);
+  }
+}
+
+.aurora {
+  animation: aurora 7s ease-in-out infinite;
+}
+
+@keyframes aurora {
+  50% {
+    opacity: 0.65;
+    transform: translateX(20px);
+  }
+}
+
+.twinkle {
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.breathe {
+  animation: breathe 3s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes breathe {
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+.fall-leaf {
+  animation: fall 9s linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translate(40px, 220px) rotate(80deg);
+    opacity: 0.2;
+  }
+}
+
+.sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.leap {
+  animation: leap 2.2s ease-in-out infinite;
+}
+
+@keyframes leap {
+  50% {
+    transform: translate(16px, -18px);
+  }
+}
+
+.howl {
+  animation: howl 4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+
+@keyframes howl {
+  50% {
+    transform: rotate(-6deg);
+  }
+}
+
+.home-panel,
+.customize,
+.editor {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  width: min(720px, 100%);
+  background: linear-gradient(180deg, rgba(255, 248, 225, 0.92), rgba(244, 228, 193, 0.88));
+  border: 4px solid #6f4518;
+  border-radius: 28px;
+  padding: 28px 28px 32px;
+  box-shadow:
+    0 20px 0 #40916c,
+    0 28px 40px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #1b4332;
+  color: #ffd166;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.home-title {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  line-height: 1.05;
+  margin: 8px 0 16px;
+  color: #1b4332;
+  text-shadow: 3px 3px 0 #ffd166;
+}
+
+.home-lead,
+.home-hint {
+  font-size: 1.15rem;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+.home-hint {
+  font-style: italic;
+  color: #6f4518;
+}
+
+.paw-row {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  font-size: 1.6rem;
+  margin-top: 10px;
+}
+
+.paw-row span:nth-child(even) {
+  transform: translateY(10px) rotate(12deg);
+}
+
+.scroll-wrap {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  animation: unroll 0.9s ease;
+}
+
+@keyframes unroll {
+  from {
+    transform: scaleY(0.2) translateY(-40px);
+    opacity: 0;
+  }
+}
+
+.rod {
+  height: 22px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5c3310, #c08552, #5c3310);
+  box-shadow: 0 6px 0 #3d2314;
+  position: relative;
+  z-index: 2;
+}
+
+.rod::before,
+.rod::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  width: 18px;
+  height: 34px;
+  border-radius: 8px;
+  background: #3d2314;
+}
+
+.rod::before {
+  left: -8px;
+}
+
+.rod::after {
+  right: -8px;
+}
+
+.scroll {
+  margin: -6px 18px;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(255, 255, 255, 0.35), transparent 45%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 26px,
+      rgba(111, 69, 24, 0.08) 27px
+    ),
+    linear-gradient(180deg, #fff6da, #efd3a0);
+  border-left: 2px solid rgba(111, 69, 24, 0.2);
+  border-right: 2px solid rgba(111, 69, 24, 0.2);
+  min-height: 280px;
+  padding: 28px 32px 36px;
+  box-shadow: inset 0 0 40px rgba(111, 69, 24, 0.12);
+}
+
+.scroll-kicker {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9c6644;
+}
+
+.scroll-title {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin: 8px 0 16px;
+  color: #9a031e;
+}
+
+.scroll-body {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.45rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.caret {
+  display: inline-block;
+  margin-left: 4px;
+  animation: blink 0.8s steps(1) infinite;
+  color: #e85d04;
+}
+
+.clue-tools {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.ghost-link,
+.btn {
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  border: 0;
+}
+
+.ghost-link {
+  background: rgba(255, 248, 225, 0.85);
+  color: #1b4332;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 2px solid #1b4332;
+}
+
+.btn {
+  display: inline-block;
+  background: #e85d04;
+  color: #fff8e7;
+  padding: 12px 18px;
+  border-radius: 999px;
+  box-shadow: 0 4px 0 #9a031e;
+}
+
+.btn.secondary {
+  background: #2d6a4f;
+  box-shadow: 0 4px 0 #081c15;
+}
+
+.ranger-link {
+  position: absolute;
+  z-index: 2;
+  right: 16px;
+  bottom: 16px;
+  background: #1b4332;
+  color: #ffd166;
+  text-decoration: none;
+  font-weight: 800;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 2px solid #ffd166;
+}
+
+.editor {
+  margin-top: 16px;
+  text-align: left;
+}
+
+.customize {
+  text-align: left;
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+}
+
+.customize h1,
+.customize .badge,
+.customize .home-lead {
+  text-align: center;
+}
+
+.customize-page {
+  justify-content: flex-start;
+}
+
+label {
+  display: block;
+  font-weight: 800;
+  margin: 10px 0;
+  text-align: left;
+}
+
+input,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  font: inherit;
+  padding: 10px 12px;
+  border: 2px solid #6f4518;
+  border-radius: 12px;
+  background: #fffdf6;
+}
+
+.clue-card {
+  border: 2px dashed #6f4518;
+  border-radius: 16px;
+  margin: 16px 0;
+  padding: 8px 14px 14px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0 8px;
+}
+
+.note {
+  font-weight: 800;
+  color: #2d6a4f;
+}
+
+code {
+  background: #fff3b0;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+@media (max-width: 640px) {
+  .scroll {
+    padding: 20px 16px 28px;
+    margin: -6px 10px;
+  }
+
+  .home-panel,
+  .customize,
+  .editor {
+    padding: 20px 16px;
+  }
+}
