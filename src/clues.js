@@ -9,7 +9,7 @@
 //  scene  = wildlife habitat backdrop (grassland | rainforest | wetland |
 //           highland | monsoon | dusk)
 //
-//  After a correct answer, the next clue’s id in this list is shown.
+//  nextLocation = place to walk to after a correct answer (not the next slug)
 //  You can also edit these in the browser at  /customize
 // ============================================================
 
@@ -24,6 +24,7 @@ and disappear when the axes arrive.
 What am I?`,
     answer: 'canopy',
     hints: ['Nature built this penthouse before humans did.'],
+    nextLocation: 'Infinity Pool',
     scene: 'grassland',
   },
   {
@@ -37,6 +38,7 @@ and researchers spend careers counting me.
 What am I?`,
     answer: 'carbon',
     hints: ['I can be a footprint without having feet.'],
+    nextLocation: 'Fitness Centre',
     scene: 'rainforest',
   },
   {
@@ -49,6 +51,7 @@ and become unusually aggressive when someone says,
 What species am I?`,
     answer: 'researcher',
     hints: ['The answer is closer than you think.'],
+    nextLocation: 'Nivālaya',
     scene: 'wetland',
   },
   {
@@ -61,6 +64,7 @@ but somehow I cause people to work at 11:59 PM.
 What am I?`,
     answer: 'deadline',
     hints: ['Think morbid.'],
+    nextLocation: 'Kosi River',
     scene: 'highland',
   },
   {
@@ -74,6 +78,7 @@ if this is a date or not.
 What am I?`,
     answer: 'excel',
     hints: ['Synonym of success.'],
+    nextLocation: 'Location 5',
     scene: 'monsoon',
   },
   {
@@ -87,11 +92,12 @@ in the energy sector.
 What am I?`,
     answer: 'coal',
     hints: ['I’m dug up before I’m burned up.'],
+    nextLocation: 'Location 6',
     scene: 'dusk',
   },
 ]
 
-const STORAGE_KEY = 'acpet-clues-v3'
+const STORAGE_KEY = 'acpet-clues-v4'
 
 export function normalizeAnswer(value) {
   return String(value ?? '')

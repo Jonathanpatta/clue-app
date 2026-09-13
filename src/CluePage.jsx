@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getClue, getNextClue, matchesAnswer, upsertClue } from './clues.js'
+import { getClue, matchesAnswer, upsertClue } from './clues.js'
 import Scroll from './Scroll.jsx'
 import WildlifeScene from './WildlifeScene.jsx'
 
@@ -20,6 +20,7 @@ export default function CluePage() {
   const [text, setText] = useState('')
   const [answer, setAnswer] = useState('')
   const [hintsText, setHintsText] = useState('')
+  const [nextLocation, setNextLocation] = useState('')
 
   useEffect(() => {
     const next = getClue(slug)
@@ -28,6 +29,7 @@ export default function CluePage() {
     setText(next?.text ?? '')
     setAnswer(next?.answer ?? '')
     setHintsText((next?.hints ?? []).join('\n'))
+    setNextLocation(next?.nextLocation ?? '')
     setGuess('')
     setHintCount(0)
     setWrong(false)
@@ -50,7 +52,6 @@ export default function CluePage() {
     )
   }
 
-  const nextClue = getNextClue(clue.id)
   const hints = clue.hints ?? []
 
   function submit(e) {
@@ -67,8 +68,8 @@ export default function CluePage() {
   function save(e) {
     e.preventDefault()
     const hints = hintsText.split('\n').map((h) => h.trim()).filter(Boolean)
-    upsertClue(clue.id, { title, text, answer, hints })
-    setClue({ ...clue, title, text, answer, hints })
+    upsertClue(clue.id, { title, text, answer, hints, nextLocation })
+    setClue({ ...clue, title, text, answer, hints, nextLocation })
     setEditing(false)
   }
 
@@ -81,11 +82,10 @@ export default function CluePage() {
           {solved ? (
             <div className="solved">
               <p className="badge">Trail unlocked</p>
-              {nextClue ? (
+              {clue.nextLocation ? (
                 <>
-                  <p className="home-lead">Walk to the next marker and open this code:</p>
-                  <p className="next-id">{nextClue.id}</p>
-                  <Link className="btn" to={`/${nextClue.id}`}>Open /{nextClue.id}</Link>
+                  <p className="home-lead">Go to this location. The next trail is waiting there.</p>
+                  <p className="next-id">{clue.nextLocation}</p>
                 </>
               ) : (
                 <p className="home-lead">The hunt is complete. Return to camp and tell the tale.</p>
@@ -136,6 +136,7 @@ export default function CluePage() {
               setText(clue.text)
               setAnswer(clue.answer)
               setHintsText((clue.hints ?? []).join('\n'))
+              setNextLocation(clue.nextLocation ?? '')
               setEditing((v) => !v)
             }}
           >
@@ -159,6 +160,10 @@ export default function CluePage() {
             <label>
               Hints (one per line)
               <textarea rows={5} value={hintsText} onChange={(e) => setHintsText(e.target.value)} />
+            </label>
+            <label>
+              Next location
+              <input value={nextLocation} onChange={(e) => setNextLocation(e.target.value)} />
             </label>
             <button className="btn" type="submit">Save clue</button>
           </form>

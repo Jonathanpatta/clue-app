@@ -20,6 +20,7 @@ export default function Customize() {
         title: c.title.trim(),
         text: c.text,
         answer: c.answer,
+        nextLocation: (c.nextLocation ?? '').trim(),
         hints: String(c.hintsText ?? (c.hints ?? []).join('\n'))
           .split('\n')
           .map((h) => h.trim())
@@ -41,6 +42,7 @@ export default function Customize() {
         text: 'Write your clue here.',
         answer: '',
         hints: [],
+        nextLocation: '',
         scene: 'grassland',
       },
     ])
@@ -64,8 +66,7 @@ export default function Customize() {
           <p className="badge">Ranger station</p>
           <h1>Customize clues</h1>
           <p className="home-lead">
-            Order is the hunt path. A correct answer reveals the next id.
-            Keep ids to 5 characters, unrelated to the answer.
+            A correct answer reveals the next location, not the next slug.
           </p>
           {clues.map((clue, i) => (
             <div key={i} className="clue-card">
@@ -85,6 +86,10 @@ export default function Customize() {
               <label>
                 Answer
                 <input value={clue.answer ?? ''} onChange={(e) => update(i, 'answer', e.target.value)} />
+              </label>
+              <label>
+                Next location
+                <input value={clue.nextLocation ?? ''} onChange={(e) => update(i, 'nextLocation', e.target.value)} />
               </label>
               <label>
                 Hints (one per line)
