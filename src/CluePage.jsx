@@ -23,12 +23,14 @@ export default function CluePage() {
     return (
       <div className="page">
         <WildlifeScene theme="home" />
-        <div className="home-panel">
-          <h1 className="home-title">This trail went cold</h1>
-          <p className="home-lead">
-            No clue lives at /{slug}. Check the name, or add one in the ranger station.
-          </p>
-          <Link className="btn" to="/">Back to camp</Link>
+        <div className="stack">
+          <div className="home-panel">
+            <h1 className="home-title">This trail went cold</h1>
+            <p className="home-lead">
+              No clue lives at /{slug}. Check the name, or add one in the ranger station.
+            </p>
+            <Link className="btn" to="/">Back to camp</Link>
+          </div>
         </div>
       </div>
     )
@@ -44,6 +46,7 @@ export default function CluePage() {
   return (
     <div className="page">
       <WildlifeScene theme={clue.slug.toLowerCase()} />
+      <div className="stack">
       <Scroll title={clue.title} text={clue.text} />
       <div className="clue-tools">
         <Link className="ghost-link" to="/">Camp</Link>
@@ -72,6 +75,7 @@ export default function CluePage() {
           <button className="btn" type="submit">Save clue</button>
         </form>
       ) : null}
+      </div>
     </div>
   )
 }

@@ -7,10 +7,10 @@ export default function Scroll({ title, text }) {
     setShown('')
     let i = 0
     const id = setInterval(() => {
-      i += 1
+      i += 2
       setShown(text.slice(0, i))
       if (i >= text.length) clearInterval(id)
-    }, 16)
+    }, 12)
     return () => clearInterval(id)
   }, [text])
 

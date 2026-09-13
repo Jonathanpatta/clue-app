@@ -41,6 +41,7 @@ export default function Customize() {
   return (
     <div className="page customize-page">
       <WildlifeScene theme="home" />
+      <div className="stack">
       <div className="customize">
         <p className="badge">Ranger station</p>
         <h1>Customize clues</h1>
@@ -49,8 +50,8 @@ export default function Customize() {
           You can also edit the defaults in <code>src/clues.js</code>.
         </p>
         {clues.map((clue, i) => (
-          <fieldset key={i} className="clue-card">
-            <legend>{clue.slug ? `/${clue.slug}` : 'new route'}</legend>
+          <div key={i} className="clue-card">
+            <p className="clue-card-label">{clue.slug ? `/${clue.slug}` : 'new route'}</p>
             <label>
               Slug (route)
               <input value={clue.slug} onChange={(e) => update(i, 'slug', e.target.value)} />
@@ -67,7 +68,7 @@ export default function Customize() {
               <Link className="ghost-link" to={`/${clue.slug || ''}`}>View /{clue.slug || '...'}</Link>
               <button type="button" className="ghost-link" onClick={() => remove(i)}>Remove</button>
             </div>
-          </fieldset>
+          </div>
         ))}
         <div className="row">
           <button type="button" className="btn" onClick={save}>Save all clues</button>
@@ -76,6 +77,7 @@ export default function Customize() {
           <Link className="ghost-link" to="/">Back to camp</Link>
         </div>
         {note ? <p className="note">{note}</p> : null}
+      </div>
       </div>
     </div>
   )
