@@ -19,7 +19,7 @@ export default function Scroll({ title, text }) {
       <div className="rod top-rod" />
       <div className="scroll">
         <div className="scroll-inner">
-          <p className="scroll-kicker">ACPET · Wild Energy Clue</p>
+          <p className="scroll-kicker">ACPET · Wildlife trail</p>
           <h1 className="scroll-title">{title}</h1>
           <p className="scroll-body">
             {shown}
