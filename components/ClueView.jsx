@@ -1,6 +1,8 @@
+'use client'
+
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { getClue, matchesAnswer, upsertClue } from './clues.js'
+import Link from 'next/link'
+import { matchesAnswer } from '../lib/defaults.js'
 import Scroll from './Scroll.jsx'
 import WildlifeScene from './WildlifeScene.jsx'
 
@@ -8,34 +10,31 @@ function solvedKey(id) {
   return `acpet-solved:${id}`
 }
 
-export default function CluePage() {
-  const { slug } = useParams()
-  const [clue, setClue] = useState(() => getClue(slug))
+export default function ClueView({ clue, id }) {
   const [guess, setGuess] = useState('')
   const [hintCount, setHintCount] = useState(0)
   const [solved, setSolved] = useState(false)
-  const [wrong, setWrong] = useState(false)
-  const [editing, setEditing] = useState(false)
-  const [title, setTitle] = useState('')
-  const [text, setText] = useState('')
-  const [answer, setAnswer] = useState('')
-  const [hintsText, setHintsText] = useState('')
   const [nextLocation, setNextLocation] = useState('')
+  const [wrong, setWrong] = useState(false)
 
   useEffect(() => {
-    const next = getClue(slug)
-    setClue(next)
-    setTitle(next?.title ?? '')
-    setText(next?.text ?? '')
-    setAnswer(next?.answer ?? '')
-    setHintsText((next?.hints ?? []).join('\n'))
-    setNextLocation(next?.nextLocation ?? '')
     setGuess('')
     setHintCount(0)
     setWrong(false)
-    setEditing(false)
-    setSolved(Boolean(next && sessionStorage.getItem(solvedKey(next.id))))
-  }, [slug])
+    if (!clue) {
+      setSolved(false)
+      setNextLocation('')
+      return
+    }
+    const raw = sessionStorage.getItem(solvedKey(clue.id))
+    if (raw !== null) {
+      setSolved(true)
+      setNextLocation(raw)
+    } else {
+      setSolved(false)
+      setNextLocation('')
+    }
+  }, [clue])
 
   if (!clue) {
     return (
@@ -44,8 +43,8 @@ export default function CluePage() {
         <div className="stack">
           <div className="home-panel">
             <h1 className="home-title">This trail went cold</h1>
-            <p className="home-lead">No clue lives at /{slug}. Check the code with your guide.</p>
-            <Link className="btn" to="/">Back to camp</Link>
+            <p className="home-lead">No clue lives at /{id}. Check the code with your guide.</p>
+            <Link className="btn" href="/">Back to camp</Link>
           </div>
         </div>
       </div>
@@ -57,20 +56,14 @@ export default function CluePage() {
   function submit(e) {
     e.preventDefault()
     if (matchesAnswer(guess, clue.answer)) {
-      sessionStorage.setItem(solvedKey(clue.id), '1')
+      const place = clue.nextLocation || ''
+      sessionStorage.setItem(solvedKey(clue.id), place)
+      setNextLocation(place)
       setSolved(true)
       setWrong(false)
       return
     }
     setWrong(true)
-  }
-
-  function save(e) {
-    e.preventDefault()
-    const hints = hintsText.split('\n').map((h) => h.trim()).filter(Boolean)
-    upsertClue(clue.id, { title, text, answer, hints, nextLocation })
-    setClue({ ...clue, title, text, answer, hints, nextLocation })
-    setEditing(false)
   }
 
   return (
@@ -82,10 +75,10 @@ export default function CluePage() {
           {solved ? (
             <div className="solved">
               <p className="badge">Trail unlocked</p>
-              {clue.nextLocation ? (
+              {nextLocation ? (
                 <>
                   <p className="home-lead">Go to this location. The next trail is waiting there.</p>
-                  <p className="next-id">{clue.nextLocation}</p>
+                  <p className="next-id">{nextLocation}</p>
                 </>
               ) : (
                 <p className="home-lead">The hunt is complete. Return to camp and tell the tale.</p>
@@ -127,47 +120,8 @@ export default function CluePage() {
           ) : null}
         </div>
         <div className="clue-tools">
-          <Link className="ghost-link" to="/">Camp</Link>
-          <button
-            type="button"
-            className="ghost-link"
-            onClick={() => {
-              setTitle(clue.title)
-              setText(clue.text)
-              setAnswer(clue.answer)
-              setHintsText((clue.hints ?? []).join('\n'))
-              setNextLocation(clue.nextLocation ?? '')
-              setEditing((v) => !v)
-            }}
-          >
-            {editing ? 'Close editor' : 'Edit this clue'}
-          </button>
+          <Link className="ghost-link" href="/">Camp</Link>
         </div>
-        {editing ? (
-          <form className="editor" onSubmit={save}>
-            <label>
-              Title
-              <input value={title} onChange={(e) => setTitle(e.target.value)} />
-            </label>
-            <label>
-              Clue text
-              <textarea rows={6} value={text} onChange={(e) => setText(e.target.value)} />
-            </label>
-            <label>
-              Answer
-              <input value={answer} onChange={(e) => setAnswer(e.target.value)} />
-            </label>
-            <label>
-              Hints (one per line)
-              <textarea rows={5} value={hintsText} onChange={(e) => setHintsText(e.target.value)} />
-            </label>
-            <label>
-              Next location
-              <input value={nextLocation} onChange={(e) => setNextLocation(e.target.value)} />
-            </label>
-            <button className="btn" type="submit">Save clue</button>
-          </form>
-        ) : null}
       </div>
     </div>
   )
