@@ -317,6 +317,16 @@ a {
   color: #6f4518;
 }
 
+.home-help {
+  margin: 16px 0 0;
+  font-weight: 800;
+}
+
+.home-help a {
+  color: #1b4332;
+  text-decoration: underline;
+}
+
 .hunt-box {
   position: relative;
   z-index: 1;

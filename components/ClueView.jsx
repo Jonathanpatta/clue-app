@@ -10,7 +10,7 @@ function solvedKey(id) {
   return `acpet-solved:${id}`
 }
 
-export default function ClueView({ clue, id }) {
+export default function ClueView({ clue, id, last }) {
   const [guess, setGuess] = useState('')
   const [hintCount, setHintCount] = useState(0)
   const [solved, setSolved] = useState(false)
@@ -66,6 +66,27 @@ export default function ClueView({ clue, id }) {
     setWrong(true)
   }
 
+  const finished = solved && last
+
+  if (finished) {
+    return (
+      <div className="page">
+        <WildlifeScene theme={clue.scene || 'dusk'} />
+        <div className="stack">
+          <div className="home-panel">
+            <p className="badge">Trail complete</p>
+            <h1 className="home-title">
+              Congratulations
+              <span>Thank you for playing</span>
+            </h1>
+            <p className="home-lead">You finished the ACPET scavenger hunt. Return to base and tell the tale.</p>
+            <Link className="btn" href="/">Return to base</Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="page">
       <WildlifeScene theme={clue.scene || 'grassland'} />
@@ -84,7 +105,10 @@ export default function ClueView({ clue, id }) {
                   ) : null}
                 </>
               ) : (
-                <p className="home-lead">The hunt is complete. Return to camp and tell the tale.</p>
+                <>
+                  <p className="home-lead">Congratulations. Thank you for playing.</p>
+                  <Link className="btn" href="/">Return to base</Link>
+                </>
               )}
             </div>
           ) : (

@@ -16,6 +16,10 @@ export default function Home() {
             A correct answer names the next location.
           </p>
           <p className="home-hint">Keep them close. Hunt brightly.</p>
+          <p className="home-help">
+            Need help? Call{' '}
+            <a href="tel:+919538415500">+91 95384 15500</a>
+          </p>
         </div>
       </div>
     </div>
