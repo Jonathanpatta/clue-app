@@ -79,6 +79,9 @@ export default function ClueView({ clue, id }) {
                 <>
                   <p className="home-lead">Go to this location. The next trail is waiting there.</p>
                   <p className="next-id">{nextLocation}</p>
+                  {clue.locationPhoto ? (
+                    <img className="location-photo" src={clue.locationPhoto} alt={nextLocation} />
+                  ) : null}
                 </>
               ) : (
                 <p className="home-lead">The hunt is complete. Return to camp and tell the tale.</p>

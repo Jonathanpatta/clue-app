@@ -6,41 +6,47 @@ import WildlifeScene from '../../components/WildlifeScene.jsx'
 
 const SCENES = ['grassland', 'rainforest', 'wetland', 'highland', 'monsoon', 'dusk']
 
+function compressPhoto(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    const blobUrl = URL.createObjectURL(file)
+    img.onload = () => {
+      const max = 720
+      const scale = Math.min(1, max / Math.max(img.width, img.height))
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(img.width * scale)
+      canvas.height = Math.round(img.height * scale)
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+      URL.revokeObjectURL(blobUrl)
+      resolve(canvas.toDataURL('image/jpeg', 0.65))
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(blobUrl)
+      reject(new Error('photo'))
+    }
+    img.src = blobUrl
+  })
+}
+
 export default function AdminPage() {
-  const [password, setPassword] = useState('')
-  const [authed, setAuthed] = useState(false)
-  const [clues, setClues] = useState([])
+  const [clues, setClues] = useState(null)
   const [note, setNote] = useState('')
 
   useEffect(() => {
     fetch('/api/admin/clues')
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((data) => {
-        setClues(data)
-        setAuthed(true)
-      })
-      .catch(() => {})
+      .then((r) => r.json())
+      .then(setClues)
+      .catch(() => setNote('Could not load clues.'))
   }, [])
-
-  async function login(e) {
-    e.preventDefault()
-    const res = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    })
-    if (!res.ok) {
-      setNote('Wrong password.')
-      return
-    }
-    setAuthed(true)
-    setNote('')
-    const data = await fetch('/api/admin/clues').then((r) => r.json())
-    setClues(data)
-  }
 
   function update(i, field, value) {
     setClues((list) => list.map((c, idx) => (idx === i ? { ...c, [field]: value } : c)))
+  }
+
+  async function pickPhoto(i, file) {
+    if (!file) return
+    const url = await compressPhoto(file)
+    update(i, 'locationPhoto', url)
   }
 
   async function save() {
@@ -67,25 +73,28 @@ export default function AdminPage() {
   function add() {
     setClues((list) => [
       ...list,
-      { id: 'xxxxx', title: 'New Clue', text: 'Write your clue here.', answer: '', hints: [], nextLocation: '', scene: 'grassland' },
+      {
+        id: 'xxxxx',
+        title: 'New Clue',
+        text: 'Write your clue here.',
+        answer: '',
+        hints: [],
+        nextLocation: '',
+        locationPhoto: '',
+        scene: 'grassland',
+      },
     ])
   }
 
-  if (!authed) {
+  if (!clues) {
     return (
       <div className="page">
         <WildlifeScene theme="home" />
         <div className="stack">
-          <form className="customize" onSubmit={login}>
+          <div className="customize">
             <p className="badge">Admin</p>
-            <h1>Sign in</h1>
-            <label>
-              Password
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </label>
-            <button className="btn" type="submit">Enter</button>
-            {note ? <p className="wrong">{note}</p> : null}
-          </form>
+            <p className="home-lead">{note || 'Loading…'}</p>
+          </div>
         </div>
       </div>
     )
@@ -98,7 +107,7 @@ export default function AdminPage() {
         <div className="customize">
           <p className="badge">Admin</p>
           <h1>Edit clues</h1>
-          <p className="home-lead">Saved to DynamoDB. Players only see the next location after a correct guess.</p>
+          <p className="home-lead">Saved to DynamoDB. A location photo shows with the next stop after a correct guess.</p>
           {clues.map((clue, i) => (
             <div key={i} className="clue-card">
               <p className="clue-card-label">{clue.id ? `/${clue.id}` : 'new route'}</p>
@@ -122,6 +131,18 @@ export default function AdminPage() {
                 Next location
                 <input value={clue.nextLocation ?? ''} onChange={(e) => update(i, 'nextLocation', e.target.value)} />
               </label>
+              <label>
+                Location photo
+                <input type="file" accept="image/*" onChange={(e) => pickPhoto(i, e.target.files?.[0])} />
+              </label>
+              {clue.locationPhoto ? (
+                <div className="photo-preview">
+                  <img src={clue.locationPhoto} alt="" />
+                  <button type="button" className="ghost-link" onClick={() => update(i, 'locationPhoto', '')}>
+                    Remove photo
+                  </button>
+                </div>
+              ) : null}
               <label>
                 Hints (one per line)
                 <textarea

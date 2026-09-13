@@ -340,6 +340,22 @@ a {
   text-align: center;
 }
 
+.location-photo,
+.photo-preview img {
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 3px solid #6f4518;
+}
+
+.photo-preview {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+
 .wrong {
   color: #9a031e;
   font-weight: 800;

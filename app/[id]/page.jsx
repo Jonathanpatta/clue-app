@@ -1,6 +1,8 @@
 import { findClue } from '../../lib/db.js'
 import ClueView from '../../components/ClueView.jsx'
 
+export const dynamic = 'force-dynamic'
+
 export default async function CluePage({ params }) {
   const { id } = await params
   const clue = await findClue(id)

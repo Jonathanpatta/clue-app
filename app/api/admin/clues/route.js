@@ -1,14 +1,13 @@
-import { isAdmin } from '../../../../lib/auth.js'
 import { defaultClues } from '../../../../lib/defaults.js'
 import { loadClues, saveClues } from '../../../../lib/db.js'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
-  if (!(await isAdmin())) return Response.json({ error: 'unauthorized' }, { status: 401 })
   return Response.json(await loadClues())
 }
 
 export async function PUT(req) {
-  if (!(await isAdmin())) return Response.json({ error: 'unauthorized' }, { status: 401 })
   const clues = await req.json()
   if (!Array.isArray(clues)) return Response.json({ error: 'invalid' }, { status: 400 })
   const cleaned = clues
@@ -26,15 +25,25 @@ export async function PUT(req) {
         .map((h) => h.trim())
         .filter(Boolean),
       nextLocation: String(c.nextLocation || '').trim(),
+      locationPhoto: String(c.locationPhoto || '').trim(),
       scene: c.scene || 'grassland',
     }))
     .filter((c) => c.id)
-  await saveClues(cleaned)
-  return Response.json(cleaned)
+  try {
+    await saveClues(cleaned)
+    return Response.json(cleaned)
+  } catch (err) {
+    console.error('DynamoDB saveClues failed', err)
+    return Response.json({ error: 'save failed' }, { status: 500 })
+  }
 }
 
 export async function DELETE() {
-  if (!(await isAdmin())) return Response.json({ error: 'unauthorized' }, { status: 401 })
-  await saveClues(defaultClues)
-  return Response.json(defaultClues)
+  try {
+    await saveClues(defaultClues)
+    return Response.json(defaultClues)
+  } catch (err) {
+    console.error('DynamoDB reset failed', err)
+    return Response.json(defaultClues)
+  }
 }
